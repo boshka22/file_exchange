@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, JSON, String, func
+from sqlalchemy import Boolean, DateTime, ForeignKey, Index, Integer, JSON, String, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -19,7 +19,7 @@ class StoredFile(Base):
     size: Mapped[int] = mapped_column(Integer, nullable=False)
     processing_status: Mapped[str] = mapped_column(String(50), nullable=False, default="uploaded")
     scan_status: Mapped[str | None] = mapped_column(String(50), nullable=True)
-    scan_details: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    scan_details: Mapped[str | None] = mapped_column(String(1000), nullable=True)
     metadata_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     requires_attention: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     created_at: Mapped[datetime] = mapped_column(
@@ -34,6 +34,10 @@ class StoredFile(Base):
         nullable=False,
     )
 
+    __table_args__ = (
+        Index("ix_files_created_at", "created_at"),
+    )
+
 
 class Alert(Base):
     __tablename__ = "alerts"
@@ -46,4 +50,9 @@ class Alert(Base):
         DateTime(timezone=True),
         server_default=func.now(),
         nullable=False,
+    )
+
+    __table_args__ = (
+        Index("ix_alerts_file_id", "file_id"),
+        Index("ix_alerts_created_at", "created_at"),
     )

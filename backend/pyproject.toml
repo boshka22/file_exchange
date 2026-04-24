@@ -1,16 +1,31 @@
 [project]
 name = "backend"
-version = "0.1.0"
-description = "Add your description here"
+version = "1.0.0"
+description = "File exchange backend with content scanning and alerts"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.12"
+
 dependencies = [
     "alembic>=1.18.4",
     "asyncpg>=0.30.0",
     "celery[redis]>=5.6.3",
-    "fastapi>=0.135.3",
+    "fastapi>=0.115.0",
     "pydantic>=2.12.5",
+    "pydantic-settings>=2.0.0",
     "python-multipart>=0.0.20",
     "sqlalchemy>=2.0.48",
     "uvicorn>=0.42.0",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "aiosqlite>=0.20.0",
+    "httpx>=0.27.0",
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-mock>=3.12.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
